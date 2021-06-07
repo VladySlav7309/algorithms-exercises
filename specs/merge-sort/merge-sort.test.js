@@ -6,8 +6,31 @@
   You'll need to write more than just one function
 */
 
+const merge = (leftSortedArray, rightSortedArray) => {
+  let result = [];
+  while (rightSortedArray.length && leftSortedArray.length) {
+    if (leftSortedArray[0] <= rightSortedArray[0]) {
+      result.push(leftSortedArray.shift())
+    } else {
+      result.push(rightSortedArray.shift());
+    }
+  }
+  return result.concat(leftSortedArray, rightSortedArray);
+}
+
 const mergeSort = (nums) => {
   // code goes here
+  if (nums.length < 2) {
+    return nums;
+  }
+  const middle = Math.floor(nums.length / 2);
+  const left =  nums.slice(0, middle);
+  const right = nums.slice(middle);
+
+  const sortedLeft = mergeSort(left);
+  const sortedRight = mergeSort(right);
+
+  return merge(sortedLeft, sortedRight);
 };
 
 // unit tests

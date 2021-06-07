@@ -23,10 +23,106 @@
 
 class Tree {
   // code goes here
+
+  constructor() {
+    this.root = null;
+  }
+
+  add(value) {
+    const node = new Node(value);
+    if(!this.root) {
+      return this.root = node;
+    }
+    return this.root.add(value);
+  }
+
+  toObject() {
+    return this.root ? this.root.serialize() : null;
+  }
 }
 
+// NOT WORKING
 class Node {
   // code also goes here
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+    this.height = 1;
+  }
+  serialize() {
+    const ans = { value: this.value };
+    ans.left = this.left === null ? null : this.left.serialize();
+    ans.right = this.right === null ? null : this.right.serialize();
+    return ans;
+  }
+
+  add(value) {
+    const direction = value > this.value ? 'right' : 'left';
+    const nextNode = this[direction];
+    if (!nextNode) {
+      this[direction] = new Node(value);
+    } else {
+      nextNode.add(value);
+    }
+    this._autobalance();
+  }
+
+  _autobalance() {
+    try {
+      const hasDoubleRightHeight = this.right && (this.right.right || this.right.left) && !this.left;
+      const hasDoubleLeftHeight = this.left && (this.left.right || this.left.left) && !this.right;
+
+      const nodeUnbalanced = hasDoubleRightHeight || hasDoubleLeftHeight;
+
+      if (nodeUnbalanced) {
+        if (this.left && this.left.right) {
+          this.left._rightRotation();
+          this._leftRotation();
+          return;
+        }
+
+        if (this.right && this.right.left) {
+          this.right._leftRotation();
+          this._rightRotation();
+          return;
+        }
+
+        if (this.right && this.right.right) {
+          this._rightRotation();
+          return;
+        }
+        if (this.left && this.left.left) {
+          this._leftRotation();
+          return;
+        }
+      }
+    } catch (e) {
+      console.log('failed to do a rotation, e: ', e);
+    }
+  }
+
+  _rightRotation() {
+    const valueBefore = this.value;
+    const leftBefore = this.left;
+    this.value = this.right.value;
+    this.left = this.right;
+    this.right = this.right.right;
+    this.left.right = this.left.left;
+    this.left.left = leftBefore;
+    this.left.value = valueBefore;
+  }
+
+  _leftRotation() {
+    const valueBefore = this.value;
+    const rightBefore = this.right;
+    this.value = this.left.value;
+    this.right = this.left;
+    this.left = this.left.left;
+    this.right.left = this.right.right;
+    this.right.right = rightBefore;
+    this.right.value = valueBefore;
+  }
 }
 
 // unit tests
@@ -37,6 +133,8 @@ describe.skip("AVL Tree", function () {
     const tree = new Tree();
     nums.map((num) => tree.add(num));
     const objs = tree.toObject();
+
+    console.log(JSON.stringify(objs));
 
     expect(objs.value).toEqual(4);
 

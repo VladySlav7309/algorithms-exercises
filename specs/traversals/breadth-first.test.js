@@ -1,5 +1,13 @@
 const breadthFirstTraverse = (queue, array) => {
   // fill code in here
+  while (true) {
+    if (!queue.length) {
+      return array;
+    }
+    const node = queue.shift();
+    array.push(node.value);
+    [node.left, node.right].filter(node => !!node).forEach(node => queue.push(node));
+  }
 };
 
 // unit tests

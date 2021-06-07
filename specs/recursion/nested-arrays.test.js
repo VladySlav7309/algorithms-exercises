@@ -11,6 +11,14 @@
 
 function nestedAdd(array) {
   // write code here
+  return array.reduce((acc, value) => {
+    if (Array.isArray(value)) {
+      acc += nestedAdd(value);
+    } else {
+      acc += value;
+    }
+    return acc;
+  }, 0)
 }
 
 test.skip("nested arrays addition", () => {

@@ -14,6 +14,42 @@
 
 function quickSort(nums) {
   // code goes here
+
+  // base case
+
+  if (nums.length <= 1) {
+    return nums;
+  }
+
+  // choose pivot
+  const pivot = nums[nums.length - 1];
+
+  // split into left and right
+  // const left = [];
+  // const right = [];
+  
+  // for (let i = 0; i < nums.length - 1; i++) {
+  //   if (nums[i] < pivot) {
+  //     left.push(nums[i])
+  //   } else {
+  //     right.push(nums[i]);
+  //   }
+  // }
+  const { left, right } = nums.slice(0, nums.length - 1).reduce((acc, num) => {
+    if (num < pivot) {
+      acc.left.push(num);
+    } else {
+      acc.right.push(num);
+    }
+    return acc;
+  }, {
+    left: [],
+    right: []
+  });
+
+  // quickSort both left and right
+  // concat left, pivot, right
+  return [...quickSort(left), pivot, ...quickSort(right)];
 }
 
 // unit tests

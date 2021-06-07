@@ -18,6 +18,45 @@ right - Node/object - the right node which itself may be another tree
 
 class Tree {
   // code goes here
+
+  constructor() {
+    this.root = null;
+  }
+
+  add(value) {
+    const node = new Node(value);
+    if(!this.root) {
+      return this.root = node;
+    }
+    return this._findAndAddR(value, this.root);
+  }
+
+  toObject() {
+    return this.root ? this.root.serialize() : null;
+  }
+
+  _findAndAddR(value, node) {
+    const direction = value > node.value ? 'right' : 'left';
+    const nextNode = node[direction];
+    if (!nextNode) {
+      return node[direction] = new Node(value);
+    }
+    return this._findAndAddR(value, nextNode);
+  }
+}
+
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+  serialize() {
+    const ans = { value: this.value };
+    ans.left = this.left === null ? null : this.left.serialize();
+    ans.right = this.right === null ? null : this.right.serialize();
+    return ans;
+  }
 }
 
 // you might consider using a Node class too
